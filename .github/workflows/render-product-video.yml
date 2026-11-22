@@ -1,5 +1,9 @@
 name: Render product video
 on:
+  push:
+    paths:
+      - 'renderer/**'
+      - '.github/workflows/render-product-video.yml'
   workflow_dispatch:
     inputs:
       product_title:
@@ -36,9 +40,9 @@ jobs:
           pip install -r renderer/requirements.txt
       - name: Render and verify
         env:
-          PRODUCT_TITLE: ${{ inputs.product_title }}
-          SUBTITLE: ${{ inputs.subtitle }}
-          IMAGE_URLS: ${{ inputs.image_urls }}
+          PRODUCT_TITLE: ${{ inputs.product_title || 'realme Buds Air 8 - Master Grey' }}
+          SUBTITLE: ${{ inputs.subtitle || 'Premium sound. Refined design.' }}
+          IMAGE_URLS: ${{ inputs.image_urls || '["https://img-prd-pim.poorvika.com/product/Realme-buds-air8-master-grey-Closed-View.webp","https://img-prd-pim.poorvika.com/product/Realme-buds-air8-master-grey-USB-View.webp","https://www.ryans.com/storage/products/main/realme-buds-air-8-anc-master-gray-bluetooth-41780644818.webp"]' }}
         run: |
           mkdir -p output
           python renderer/render.py --title "$PRODUCT_TITLE" --subtitle "$SUBTITLE" --images "$IMAGE_URLS" --output output/product-video.mp4
